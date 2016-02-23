@@ -69,20 +69,23 @@ echo "answer-4 " $promoter
 #Use BEDtools to identify the longest interval on `chr22` that is not
 #covered by `genes.hg19.bed.gz`. Report the interval like `chr1:100-500`.
 
-#gzcat $data/bed/genes.hg19.bed.gz | awk '$1 == "chr22"' > chr22q6.bed
-#sort -i chr22q6.bed > tmp.bed
-#mv tmp.bed chr22q6.bed
+gzcat $data/bed/genes.hg19.bed.gz | awk '$1 == "chr22"' > chr22q6.bed
+sort -i chr22q6.bed > tmp.bed
+mv tmp.bed chr22q6.bed
 
-#bedtools complement -i chr22q6.bed -g $data/genome/hg19.genome\
-# | awk ' $1 == "chr22"'\
-# | awk '{print $1, $2, $3, $3 - $2}'\
-# | sort - k4n
- 
-notcov=$(bedtools complement -i $data/bed/genes.hg19.bed.gz -g $data/genome/hg19.genome\
- | awk 'BEGIN {OFS = "\t"} {print $1, $2, $3, $3-$2}'\
+notcov=$(bedtools complement -i chr22q6.bed -g $data/genome/hg19.genome\
+ | awk ' $1 == "chr22"'\
+ | awk '{print $1, $2, $3, $3 - $2}'\
  | sort -k4n\
  | tail -n1\
- | awk ' { print $1":"$2"-"$3}') 
+ | awk ' {print $1":" $2"-"$3} ' )
+ 
+
+#notcov=$(bedtools complement -i $data/bed/genes.hg19.bed.gz -g $data/genome/hg19.genome\
+# | awk 'BEGIN {OFS = "\t"} {print $1, $2, $3, $3-$2}'\
+# | sort -k4n\
+# | tail -n1\
+# | awk ' { print $1":"$2"-"$3}') 
 
 echo "answer-5 " $notcov
 
